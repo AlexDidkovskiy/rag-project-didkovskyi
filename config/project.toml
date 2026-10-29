@@ -1,0 +1,53 @@
+[project]
+name = "rag-project-didkovskyi"
+stage = "lab-1-design"
+author = "Олексій Дідковський"
+group = "ІПЗздм-26-1"
+teacher = "Дашенков Д. С."
+language = "en"
+
+[corpus]
+dataset = "wikimedia/wikipedia"
+configuration = "20231101.simple"
+topic = "geography"
+root_category = "Category:Geography"
+category_max_depth = 4
+target_documents = 1000
+min_documents = 500
+max_documents = 10000
+selection_status = "planned-for-lab-2"
+licenses_in_dataset_card = ["CC-BY-SA-3.0", "GFDL"]
+
+[ingestion]
+min_characters = 100
+chunk_tokens = 220
+overlap_tokens = 33
+# Межа враховує 256 wordpieces all-MiniLM-L6-v2; заголовок не додається до embedding text.
+tokenizer = "sentence-transformers/all-MiniLM-L6-v2"
+
+[embedding]
+model = "sentence-transformers/all-MiniLM-L6-v2"
+dimensions = 384
+normalize = true
+device = "cpu"
+
+[index]
+backend = "chroma"
+path = "storage/chroma"
+collection = "geography_minilm_v1"
+distance = "cosine"
+
+[retrieval]
+method = "dense-and-bm25-rrf"
+candidate_k = 10
+context_k = 5
+rrf_k = 60
+
+[generation]
+provider = "ollama"
+base_url = "http://localhost:11434"
+model = "llama3.2:3b"
+temperature = 0.0
+num_ctx = 4096
+timeout_seconds = 180
+invalid_citation_retries = 1
